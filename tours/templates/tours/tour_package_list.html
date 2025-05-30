@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% extends "tours/base.html" %}
+{% block content %}
+<h2>Available Tour Packages</h2>
+<div class="row">
+    {% for package in packages %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            {% if package.featured_image %}
+            <img src="{{ package.featured_image.url }}" class="card-img-top" alt="{{ package.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ package.title }}</h5>
+                <p class="card-text">{{ package.description|truncatewords:20 }}</p>
+                <ul class="list-unstyled mb-2">
+                    <li><strong>Location:</strong> {{ package.location }}</li>
+                    <li><strong>Duration:</strong> {{ package.duration }} days</li>
+                    <li><strong>Price:</strong> ${{ package.price }}</li>
+                </ul>
+                <a href="{% url 'tours:tour_package_detail' package.pk %}" class="btn btn-primary btn-sm">View Details</a>
+                <a href="{% url 'tours:tour_package_update' package.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="{% url 'tours:tour_package_delete' package.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+</body>
+</html>

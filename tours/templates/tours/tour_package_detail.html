@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% extends "tours/base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        {% if package.featured_image %}
+        <img src="{{ package.featured_image.url }}" class="img-fluid rounded" alt="{{ package.title }}">
+        {% endif %}
+    </div>
+    <div class="col-md-7">
+        <h2>{{ package.title }}</h2>
+        <p>{{ package.description }}</p>
+        <ul class="list-unstyled">
+            <li><strong>Location:</strong> {{ package.location }}</li>
+            <li><strong>Duration:</strong> {{ package.duration }} days</li>
+            <li><strong>Price:</strong> ${{ package.price }}</li>
+        </ul>
+        <a href="{% url 'tours:tour_package_update' package.pk %}" class="btn btn-secondary">Edit Package</a>
+        <a href="{% url 'tours:tour_package_delete' package.pk %}" class="btn btn-danger">Delete Package</a>
+    </div>
+</div>
+<hr>
+<h4 class="mt-4">Itinerary</h4>
+<a href="{% url 'tours:itinerary_create' package.pk %}" class="btn btn-primary mb-3">+ Add Itinerary Day</a>
+<div class="accordion" id="itineraryAccordion">
+    {% for item in itineraries %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ item.day_number }}">
+            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ item.day_number }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+                Day {{ item.day_number }}: {{ item.title }}
+            </button>
+        </h2>
+        <div id="collapse{{ item.day_number }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ item.day_number }}" data-bs-parent="#itineraryAccordion">
+            <div class="accordion-body">
+                <p>{{ item.description }}</p>
+                <ul>
+                    <li><strong>Included Meals:</strong> {{ item.included_meals|default:"None" }}</li>
+                    <li><strong>Transportation:</strong> {{ item.transportation|default:"N/A" }}</li>
+                    <li><strong>Attractions:</strong> {{ item.attractions|default:"N/A" }}</li>
+                </ul>
+                <a href="{% url 'tours:itinerary_update' item.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="{% url 'tours:itinerary_delete' item.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No itinerary available for this package.</p>
+    {% endfor %}
+</div>
+<a href="{% url 'tours:tour_package_list' %}" class="btn btn-link mt-4">Back to List</a>
+{% endblock %}
+</body>
+</html>
